@@ -1,4 +1,9 @@
-const { calculate } = require('../calculator');
+const {
+  calculate,
+  modulo,
+  power,
+  squareRoot,
+} = require('../calculator');
 
 describe('calculator', () => {
   describe('addition', () => {
@@ -49,10 +54,50 @@ describe('calculator', () => {
     });
   });
 
+  describe('modulo', () => {
+    test('returns the remainder from the example values 5 and 2', () => {
+      expect(modulo(5, 2)).toBe(1);
+    });
+
+    test('supports modulo through calculate', () => {
+      expect(calculate('%', 10, 4)).toBe(2);
+    });
+
+    test('rejects a zero divisor', () => {
+      expect(() => modulo(10, 0)).toThrow('Cannot take modulo by zero.');
+    });
+  });
+
+  describe('power', () => {
+    test('raises the example base 2 to the exponent 3', () => {
+      expect(power(2, 3)).toBe(8);
+    });
+
+    test('supports power through calculate', () => {
+      expect(calculate('^', 3, 2)).toBe(9);
+    });
+  });
+
+  describe('square root', () => {
+    test('returns the square root from the example value 16', () => {
+      expect(squareRoot(16)).toBe(4);
+    });
+
+    test('supports square root through calculate', () => {
+      expect(calculate('sqrt', 2)).toBeCloseTo(Math.sqrt(2));
+    });
+
+    test('rejects negative numbers', () => {
+      expect(() => squareRoot(-1)).toThrow(
+        'Cannot take the square root of a negative number.',
+      );
+    });
+  });
+
   describe('validation', () => {
     test('rejects unsupported operations', () => {
-      expect(() => calculate('%', 10, 2)).toThrow(
-        'Unsupported operation. Use +, -, *, /, or their names.',
+      expect(() => calculate('log', 10, 2)).toThrow(
+        'Unsupported operation. Use +, -, *, /, %, ^, sqrt, or their names.',
       );
     });
 
@@ -67,7 +112,7 @@ describe('calculator', () => {
       [2, Number.NEGATIVE_INFINITY],
     ])('rejects non-finite operands: %p and %p', (left, right) => {
       expect(() => calculate('add', left, right)).toThrow(
-        'Both operands must be valid numbers.',
+        'Operands must be valid numbers.',
       );
     });
   });
